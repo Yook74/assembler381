@@ -16,15 +16,13 @@ addiu $5, $5, 0xA #load 10 into $5
 slt   $4, $1, $5 #4 is 1 if $1 is valid
 beq   $4, $0, End
 
-xor   $2, $0, $0
-ori   $2, $0, 0x1 #load 1 into $2
-sll   $1, $1, $2  #this line and the next preform the actual operation
+sll   $1, $1, 0x1  #this line and the next preform the actual operation
 add   $1, $1, $1
 
-addu  $3, $3, 0x4 #set 3 to the output addr
+addiu  $3, $3, 0x4 #set 3 to the output addr
 sw    $1, 0($3)
-addi  $5, $5, -0x2 #sets $5 to 8
-srl   $1, $1, $5 
+addi  $5, $5, -0x2 #sets $5 to 8 FIXME this is wrong
+srl   $1, $1, 0x8
 sw    $1, 0($3)
 
 End:

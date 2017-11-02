@@ -34,13 +34,46 @@ def opDictFromFile(fName):
 
     return opDict
 
+
+def regNumfromNotation(regNotation):
+    regNotation=regNotation.replace(",","")
+    regNotation=regNotation.replace("$","")
+    return int(regNotation)
+
+
 def rType(line,opDict):
-    return -1
+    lineList=line.split()
+    opCode=opDict[lineList[0]].opCode
+    funCode=opDict[lineList[0]].funCode
+    shamt=0
+
+    if lineList[0] == "jr":
+        rd=0
+        rs=regNumfromNotation(lineList[1])
+        rt=0
+    elif lineList[0] == "sll" or lineList[0] == "srl":
+        rd=regNumfromNotation(lineList[1])
+        rs=0
+        rt=regNumfromNotation(lineList[2])
+        shamt=int(lineList[3],16)
+    else:
+        rd=regNumfromNotation(lineList[1])
+        rs=regNumfromNotation(lineList[2])
+        rt=regNumfromNotation(lineList[3])
+
+    opCode=bin(opCode)[2:].zfill(6)
+    funCode=bin(funCode)[2:].zfill(6)
+    rd=bin(rd)[2:].zfill(5)
+    rs=bin(rs)[2:].zfill(5)
+    rt=bin(rt)[2:].zfill(5)
+    shamt=bin(shamt)[2:].zfill(5)
+
+    return opCode+rs+rt+rd+shamt+funCode
 
 def iType(line,opDict):
     return -1
 
-def jType(line, opDict, labels):
+def jType(line, opDict, labels, arrayIdx):
     return -1
 
 
@@ -72,11 +105,11 @@ def assemble(inFName):
             currentAddress+=4
 
             if opDict[operation].opType == 'r':
-                instructions.append(rType(operation,opDict))
+                instructions.append(rType(line,opDict))
             elif opDict[operation].opType == 'i':
-                instructions.append(iType(operation,opDict))
+                instructions.append(iType(line,opDict))
             elif opDict[operation].opType == 'j':
-                instructions.append(jType(operation,opDict, labels))
+                instructions.append(jType(line, opDict, labels, (len(instructions))))
             else:
                 print("Unrecognized type:" , opDict[operation].opType)
 
