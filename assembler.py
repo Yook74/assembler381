@@ -1,5 +1,4 @@
-from enum import Enum
-
+FIRST_INSTRUCTION_ADDRESS=1
 
 class Label(object):
     def __init__(self):
@@ -35,4 +34,52 @@ def opDictFromFile(fName):
 
     return opDict
 
+def rType(line,opDict):
+    return -1
 
+def iType(line,opDict):
+    return -1
+
+def jType(line, opDict, labels):
+    return -1
+
+
+def assemble(inFName):
+    inFile= open(inFName, 'r')
+    instructions=[]
+    currentAddress=FIRST_INSTRUCTION_ADDRESS
+    opDict=opDictFromFile("operations.txt")
+    labels={}
+
+    for line in inFile:
+        if '#' in line[:2] :
+            pass  # this is a comment
+        elif line[0].isupper():
+            line = line.replace(":","")
+            line = line.replace(" ","")
+            line = line.replace("\n","")
+            if line not in labels:
+                labels[line] = Label()
+            labels[line].location = currentAddress  # TODO maybe plus 4
+        elif line.split() == []:
+            pass  # empty line
+        else:
+            operation=line.split()[0]
+            if operation not in opDict:
+                print("Unknown instruction '"+operation+"' from line '"+line[:-1]+"'")
+                exit(1)
+
+            currentAddress+=4
+
+            if opDict[operation].opType == 'r':
+                instructions.append(rType(operation,opDict))
+            elif opDict[operation].opType == 'i':
+                instructions.append(iType(operation,opDict))
+            elif opDict[operation].opType == 'j':
+                instructions.append(jType(operation,opDict, labels))
+            else:
+                print("Unrecognized type:" , opDict[operation].opType)
+
+    return instructions
+
+print(assemble("mult3.S"))
