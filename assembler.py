@@ -1,4 +1,4 @@
-FIRST_INSTRUCTION_ADDRESS = 0
+FIRST_INSTRUCTION_ADDRESS = 0  # in units of bytes
 
 class Label(object):
     def __init__(self):
@@ -7,13 +7,14 @@ class Label(object):
 
 
 class Operation(object):
-
     def __init__(self, opType, opCode, funCode=-1):
         self.opType = opType
         self.opCode = opCode
         self.funCode = funCode
 
 
+# Outputs a dictionary of operation objects. The keys of that dictionary are the names of the operations.
+# Operations.txt contains the information that this is designed to read from
 def opDictFromFile(fName):
     inFile = open(fName, 'r')
     opDict = {}
@@ -34,13 +35,15 @@ def opDictFromFile(fName):
 
     return opDict
 
-
+# Given something llike "#3,", this returns 3
 def regNumfromNotation(regNotation):
     regNotation=regNotation.replace(",","")
     regNotation=regNotation.replace("$","")
     return int(regNotation)
 
 
+# Given a line from the .S file that contains an r-type instruction,
+# this returns a binary string that represents that instruction
 def rType(line,opDict):
     lineList=line.split()
     opCode=opDict[lineList[0]].opCode
@@ -71,6 +74,8 @@ def rType(line,opDict):
     return opCode+rs+rt+rd+shamt+funCode
 
 
+# Given a line from the .S file that contains an i-type instruction,
+# this returns a binary string that represents that instruction
 def iType(line,opDict):
     lineList=line.split()
     opCode=opDict[lineList[0]].opCode
@@ -92,6 +97,9 @@ def iType(line,opDict):
     return opCode+rs+rt+imm
 
 
+# Given a line from the .S file that contains an j-type instruction,
+# this returns a binary string that contains part or all of the instruction.
+# The rest of the instruction is added in resolveLabels()
 def jType(line, opDict, labels, arrayIdx):
     lineList=line.split()
     opCode=opDict[lineList[0]].opCode
@@ -113,7 +121,7 @@ def resolveLabels(labels,instructions):
             addr=bin(labels[label].location)[2:].zfill(26)
             instructions[idx]=instructions[idx]+addr
 
-
+# reads a .S file and outputs an array of strings. Each string is the binary representation of an instruction
 def assemble(inFName):
     inFile= open(inFName, 'r')
     instructions=[]
@@ -155,6 +163,9 @@ def assemble(inFName):
 
     return instructions
 
+
+# Takes the name of an output file and calls assemble() on some file.
+# Formats the output of assemble and writes the formatted output to that file.
 def writeToFile(outFileName):
     dotSFile=input("Please enter the location of the file to assemble: ")
     instrList=assemble(dotSFile)
@@ -170,6 +181,7 @@ def writeToFile(outFileName):
         addr=hex(addr)
 
         outFile.write(addr+" "+instruction+"\n")
+
 
 writeToFile("sram64kx8.dat")
 
