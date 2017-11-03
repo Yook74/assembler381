@@ -1,8 +1,8 @@
-FIRST_INSTRUCTION_ADDRESS=1
+FIRST_INSTRUCTION_ADDRESS = 0
 
 class Label(object):
     def __init__(self):
-        self.indices = []  # Instructions will be stored in a list. This is the indicies of that list that need this label
+        self.indices = []  # Instructions will be stored in a list. This is the indices of that list that need this label
         self.location = -1  # The location that the label references
 
 
@@ -70,11 +70,48 @@ def rType(line,opDict):
 
     return opCode+rs+rt+rd+shamt+funCode
 
+
 def iType(line,opDict):
-    return -1
+    lineList=line.split()
+    opCode=opDict[lineList[0]].opCode
+
+    if lineList[0] == "beq":
+        rt=regNumfromNotation(lineList[2])
+        rs=regNumfromNotation(lineList[1])
+        imm=int(lineList[3],16)
+    else:
+        rt=regNumfromNotation(lineList[1])
+        rs=regNumfromNotation(lineList[2])
+        imm=int(lineList[3],16)
+
+    opCode=bin(opCode)[2:].zfill(6)
+    rs=bin(rs)[2:].zfill(5)
+    rt=bin(rt)[2:].zfill(5)
+    imm=bin(imm & 0xffff)[2:].zfill(16)
+
+    return opCode+rs+rt+imm
+
 
 def jType(line, opDict, labels, arrayIdx):
-    return -1
+    lineList=line.split()
+    opCode=opDict[lineList[0]].opCode
+    opCode=bin(opCode)[2:].zfill(6)
+
+    if lineList[0] == "halt":
+        return opCode + "1"*26
+    else:
+        if lineList[1] not in labels:
+            labels[lineList[1]]=Label()
+        labels[lineList[1]].indices.append(arrayIdx)  # I'll use this to find it later
+
+        return opCode  # the address gets tacked on in resolveLabels
+
+
+def resolveLabels(labels,instructions):
+    for label in labels:
+        for idx in labels[label].indices:
+            addr=bin(labels[label].location)[2:].zfill(26)
+            instructions[idx]=instructions[idx]+addr
 
 
 def assemble(inFName):
@@ -93,7 +130,7 @@ def assemble(inFName):
             line = line.replace("\n","")
             if line not in labels:
                 labels[line] = Label()
-            labels[line].location = currentAddress  # TODO maybe plus 4
+            labels[line].location = currentAddress + 4
         elif line.split() == []:
             pass  # empty line
         else:
@@ -102,7 +139,7 @@ def assemble(inFName):
                 print("Unknown instruction '"+operation+"' from line '"+line[:-1]+"'")
                 exit(1)
 
-            currentAddress+=4
+            currentAddress += 4
 
             if opDict[operation].opType == 'r':
                 instructions.append(rType(line,opDict))
@@ -111,8 +148,14 @@ def assemble(inFName):
             elif opDict[operation].opType == 'j':
                 instructions.append(jType(line, opDict, labels, (len(instructions))))
             else:
-                print("Unrecognized type:" , opDict[operation].opType)
+                print("Unrecognized type:", opDict[operation].opType)
+                exit(1)
+
+    resolveLabels(labels, instructions)
 
     return instructions
 
-print(assemble("mult3.S"))
+
+instr=assemble("mult3.S")
+for inst in instr:
+    print(inst)
