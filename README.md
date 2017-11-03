@@ -11,4 +11,6 @@ Acts as an assembler for the subset of MIPS used in COS 381
 
 ## Features to add
 - I'd like to make the above list as short as possible
-- The thing needs to output to a file or something, but I don't know what form that should take yet. Currently it simply prints it's output
+
+## Things to note
+- I actually don't know if this works. It outputs some hex but I haven't checked if it's the correct hex very thoroughly 
