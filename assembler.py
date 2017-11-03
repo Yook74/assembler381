@@ -156,6 +156,7 @@ def assemble(inFName):
     return instructions
 
 
-instr=assemble("mult3.S")
+dotSFile=input("Please enter the location of the file to assemble: ")
+instr=assemble(dotSFile)
 for inst in instr:
     print(inst)
