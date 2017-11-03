@@ -155,8 +155,22 @@ def assemble(inFName):
 
     return instructions
 
+def writeToFile(outFileName):
+    dotSFile=input("Please enter the location of the file to assemble: ")
+    instrList=assemble(dotSFile)
 
-dotSFile=input("Please enter the location of the file to assemble: ")
-instr=assemble(dotSFile)
-for inst in instr:
-    print(inst)
+    outFile=open(outFileName,'w')
+    nextAddr=FIRST_INSTRUCTION_ADDRESS
+
+    for instruction in instrList:
+        addr=nextAddr
+        nextAddr += 4
+
+        instruction=hex(int(instruction,2))
+        addr=hex(addr)
+
+        outFile.write(addr+" "+instruction+"\n")
+
+writeToFile("sram64kx8.dat")
+
+
