@@ -180,7 +180,7 @@ def writeToFile(outFileName):
         instruction=hex(int(instruction,2))
         addr=hex(addr)
 
-        outFile.write(addr+" "+instruction+"\n")
+        outFile.write(addr[2:].zFill(8)+" "+instruction[2:].zFill(8)+"\n")
 
 
 writeToFile("sram64kx8.dat")
