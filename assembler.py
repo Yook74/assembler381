@@ -3,7 +3,7 @@ FIRST_INSTRUCTION_ADDRESS = 0  # in units of bytes
 class Label(object):
     def __init__(self):
         self.indices = []  # Instructions will be stored in a list. This is the indices of that list that need this label
-        self.location = -1  # The location that the label references
+        self.location = -1  # The location that the label references in units of words
 
 
 class Operation(object):
