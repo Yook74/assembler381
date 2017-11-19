@@ -138,7 +138,7 @@ def assemble(inFName):
             line = line.replace("\n","")
             if line not in labels:
                 labels[line] = Label()
-            labels[line].location = currentAddress + 4
+            labels[line].location = (currentAddress + 4)/4 # pc+4 in units of words
         elif line.split() == []:
             pass  # empty line
         else:
