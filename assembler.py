@@ -167,7 +167,7 @@ def assemble(inFName):
 # Takes the name of an output file and calls assemble() on some file.
 # Formats the output of assemble and writes the formatted output to that file.
 def writeToFile(outFileName):
-    dotSFile=input("Please enter the location of the file to assemble: ")
+    dotSFile=input("Assembly file location (may need to surround in quotes): ")
     instrList=assemble(dotSFile)
 
     outFile=open(outFileName,'w')
@@ -181,6 +181,7 @@ def writeToFile(outFileName):
         addr=hex(addr)
 
         outFile.write(addr[2:].zfill(8)+" "+instruction[2:].zfill(8)+"\n")
+    print("outputted to "+outFileName)
 
 
 writeToFile("sram64kx8.dat")
