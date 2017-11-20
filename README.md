@@ -1,5 +1,5 @@
 # Assembler381
-Acts as an assembler for the subset of MIPS used in COS 381
+Acts as an assembler for the subset of MIPS used in COS 381. Works on my machine™
 
 ## Extra syntax rules
 - Pretty much everything should be separated by spaces. For example: sll $0, $0, 0x0 is good but sll $0,$0, 0x0 isn't
@@ -12,5 +12,4 @@ Acts as an assembler for the subset of MIPS used in COS 381
 ## Features to add
 - I'd like to make the above list as short as possible
 
-## Things to note
-- I actually don't know if this works. It outputs some hex but I haven't checked if it's the correct hex very thoroughly 
+
